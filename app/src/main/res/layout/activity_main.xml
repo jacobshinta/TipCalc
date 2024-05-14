@@ -23,7 +23,7 @@
             android:layout_marginStart="16dp"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="number" />
+            android:inputType="number|numberDecimal" />
     </LinearLayout>
 
     <LinearLayout
