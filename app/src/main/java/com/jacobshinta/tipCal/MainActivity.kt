@@ -1,6 +1,7 @@
 package com.jacobshinta.tipCal
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
@@ -26,10 +27,6 @@ class MainActivity : ComponentActivity() {
     private lateinit var btnMed: Button
     private lateinit var btnHigh: Button
     private lateinit var btnCustom: Button
-    private lateinit var customTipLayout: LinearLayout
-    private lateinit var customTipInput: EditText
-    private lateinit var btnCustomOk: Button
-    private lateinit var btnCustomCancel: Button
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +39,6 @@ class MainActivity : ComponentActivity() {
         btnMed = findViewById(R.id.btn_mid)
         btnHigh = findViewById(R.id.btn_high)
         btnCustom = findViewById(R.id.btn_custom)
-        customTipLayout = findViewById(R.id.custom_tip_layout)
-        customTipInput = findViewById(R.id.et_custom_tip)
-        btnCustomOk = findViewById(R.id.btn_custom_ok)
-        btnCustomCancel = findViewById(R.id.btn_custom_cancel)
 
         btnLow.backgroundTintList = resources.getColorStateList(R.color.button_color)
 
@@ -81,23 +74,8 @@ class MainActivity : ComponentActivity() {
         }
         btnCustom.setOnClickListener{
             reload(3)
-            customTipLayout.visibility = View.VISIBLE
+            showCustomTipDialog()
         }
-        btnCustomOk.setOnClickListener {
-            val customTip = customTipInput.text.toString()
-            if (customTip.isNotEmpty()) {
-                tipCurrent = customTip.toDouble()
-                isCustomTip = true
-                customTipLayout.visibility = View.GONE
-                btnCustom.text = "$$customTip"
-                computeTipAndTotal()
-            }
-        }
-
-        btnCustomCancel.setOnClickListener {
-            customTipLayout.visibility = View.GONE
-        }
-
     }
     private fun computeTipAndTotal() {
         if (billAmount.text.isEmpty()) {
@@ -112,6 +90,31 @@ class MainActivity : ComponentActivity() {
 
         tipAmount.text = "%.2f".format(tipCalc)
         totalAmount.text = "%.2f".format(totalCalc)
+    }
+
+    private fun showCustomTipDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Enter Custom Tip")
+
+        val input = EditText(this)
+        input.inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+        builder.setView(input)
+
+        builder.setPositiveButton("OK") { dialog, _ ->
+            val customTip = input.text.toString()
+            if (customTip.isNotEmpty()) {
+                isCustomTip = true
+                btnCustom.text = "$$customTip"
+                tipCurrent = customTip.toDouble()
+                computeTipAndTotal()
+            }
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.cancel()
+        }
+
+        builder.show()
     }
 
     fun reload(btnSelected: Int) {
