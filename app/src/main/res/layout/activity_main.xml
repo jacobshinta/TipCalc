@@ -104,34 +104,4 @@
             android:layout_marginStart="16dp"
             android:layout_weight="1" />
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/custom_tip_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        android:layout_marginTop="16dp">
-
-        <EditText
-            android:id="@+id/et_custom_tip"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Enter Tip $"
-            android:inputType="numberDecimal" />
-
-        <Button
-            android:id="@+id/btn_custom_ok"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="OK" />
-
-        <Button
-            android:id="@+id/btn_custom_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cancel" />
-    </LinearLayout>
-
 </LinearLayout>
