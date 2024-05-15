@@ -2,16 +2,11 @@ package com.jacobshinta.tipCal
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.Dialog
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 
@@ -20,28 +15,49 @@ import androidx.activity.ComponentActivity
 class MainActivity : ComponentActivity() {
     private var tipCurrent = 0.15
     private var isCustomTip = false
-    private lateinit var billAmount: EditText
-    private lateinit var tipAmount: TextView
-    private lateinit var totalAmount: TextView
-    private lateinit var btnLow: Button
-    private lateinit var btnMed: Button
-    private lateinit var btnHigh: Button
-    private lateinit var btnCustom: Button
+
+    private lateinit var billAmount  : TextView
+    private lateinit var tipAmount   : TextView
+    private lateinit var totalAmount : TextView
+    private lateinit var btnLow      : Button
+    private lateinit var btnMed      : Button
+    private lateinit var btnHigh     : Button
+    private lateinit var btnCustom   : Button
+
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        billAmount = findViewById(R.id.et_bill)
-        tipAmount = findViewById(R.id.tv_tip_amount)
+        billAmount  = findViewById(R.id.et_bill)
+        tipAmount   = findViewById(R.id.tv_tip_amount)
         totalAmount = findViewById(R.id.tv_total)
-        btnLow = findViewById(R.id.btn_low)
-        btnMed = findViewById(R.id.btn_mid)
-        btnHigh = findViewById(R.id.btn_high)
-        btnCustom = findViewById(R.id.btn_custom)
+        btnLow      = findViewById(R.id.btn_low)
+        btnMed      = findViewById(R.id.btn_mid)
+        btnHigh     = findViewById(R.id.btn_high)
+        btnCustom   = findViewById(R.id.btn_custom)
 
+        setup()
+        setupListeners()
+    }
+    private fun setup() {
         btnLow.backgroundTintList = resources.getColorStateList(R.color.button_color)
+    }
+    private fun computeTipAndTotal() {
+        if (billAmount.text.isEmpty()) {
+            tipAmount.text = ""
+            totalAmount.text = ""
+            return
+        }
+        val billCalc = billAmount.text.toString().toDouble()
 
+        val tipCalc = if (isCustomTip) tipCurrent else billCalc * tipCurrent
+        val totalCalc = billCalc + tipCalc
+
+        tipAmount.text = "%.2f".format(tipCalc)
+        totalAmount.text = "%.2f".format(totalCalc)
+    }
+    private fun setupListeners() {
         billAmount.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
@@ -54,6 +70,7 @@ class MainActivity : ComponentActivity() {
             }
 
         })
+
         btnLow.setOnClickListener{
             tipCurrent = .15
             reload(0)
@@ -76,20 +93,6 @@ class MainActivity : ComponentActivity() {
             reload(3)
             showCustomTipDialog()
         }
-    }
-    private fun computeTipAndTotal() {
-        if (billAmount.text.isEmpty()) {
-            tipAmount.text = ""
-            totalAmount.text = ""
-            return
-        }
-        val billCalc = billAmount.text.toString().toDouble()
-
-        val tipCalc = if (isCustomTip) tipCurrent else billCalc * tipCurrent
-        val totalCalc = billCalc + tipCalc
-
-        tipAmount.text = "%.2f".format(tipCalc)
-        totalAmount.text = "%.2f".format(totalCalc)
     }
 
     private fun showCustomTipDialog() {
@@ -117,7 +120,7 @@ class MainActivity : ComponentActivity() {
         builder.show()
     }
 
-    fun reload(btnSelected: Int) {
+    private fun reload(btnSelected: Int) {
         when(btnSelected) {
             1 -> {
                 btnLow.backgroundTintList = resources.getColorStateList(R.color.button_color_gray)
